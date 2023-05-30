@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/smtp"
 	"os"
 
-	"lify_backend/models"
-	"lify_backend/response"
+	"develov_be/models"
+	"develov_be/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -17,6 +18,17 @@ import (
 type Server struct {
 	DB     *gorm.DB
 	Router *gin.Engine
+}
+
+func (server *Server) ConfigOtpGmail(configAuthEmail, configAuthPassword, configSmtpHost, configSmtpPort string, toEmail []string, body []byte) error {
+	auth := smtp.PlainAuth("", configAuthEmail, configAuthPassword, configSmtpHost)
+	smtpAddr := fmt.Sprintf("%s:%v", configSmtpHost, configSmtpPort)
+
+	err := smtp.SendMail(smtpAddr, auth, configAuthEmail, toEmail, body)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // config to db local
@@ -36,6 +48,12 @@ func (s *Server) InitializeServer(DbDriver, DbHost, DbUser, DbPassword, DbName, 
 	//auto migrate
 	s.DB.AutoMigrate(
 		models.User{},
+		models.Mentor{},
+		models.FeedBack{},
+		models.Comment{},
+		models.Community{},
+		models.Tools{},
+		models.MentorTools{},
 	)
 
 	gin.SetMode(gin.ReleaseMode)

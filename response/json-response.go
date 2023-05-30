@@ -5,9 +5,8 @@ import (
 )
 
 type JsonResponse struct {
-	Status  uint16      `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Status  uint16 `json:"status"`
+	Message string `json:"message"`
 }
 type JsonGetResponse struct {
 	Count   uint64      `json:"count"`
@@ -54,18 +53,31 @@ func JSONLOGIN(c *gin.Context, statusCode int, message string, token string) {
 
 }
 
-func JSON(c *gin.Context, statusCode uint16, message string, data interface{}) {
+func JSON(c *gin.Context, statusCode uint16, message string) {
 	res := JsonResponse{
 		Status:  statusCode,
 		Message: message,
-		Data:    data,
 	}
 	c.JSON(int(statusCode), res)
+}
+
+func ErrorResponseAuth(c *gin.Context, statusCode int, message string) {
+	c.JSON(statusCode, gin.H{
+		"status":  statusCode,
+		"message": message,
+	})
 }
 
 func ErrorResponse(c *gin.Context, statusCode int, err error) {
 	c.JSON(statusCode, gin.H{
 		"status":  statusCode,
 		"message": err,
+	})
+}
+
+func ErrorSigInResponse(c *gin.Context, statusCode int, message string) {
+	c.JSON(statusCode, gin.H{
+		"status":  statusCode,
+		"message": message,
 	})
 }

@@ -2,9 +2,8 @@ package models
 
 import (
 	"crypto/sha256"
+	"develov_be/auth"
 	"encoding/hex"
-	"errors"
-	"lify_backend/auth"
 	"log"
 	"os/exec"
 	"strconv"
@@ -15,17 +14,23 @@ import (
 type User struct {
 	Id       uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	Uuid     string `gorm:"size:100;not null;unique" json:"uuId"`
-	Nama     string `gorm:"size:100;not null;unique" json:"nama"`
+	UserName string `gorm:"size:100;not null;unique" json:"userName"`
+	Profile  string `gorm:"type:text;null" json:"profile"`
+	Nama     string `gorm:"size:100;not null" json:"nama"`
 	Email    string `gorm:"size:100;not null;unique" json:"email"`
 	Password string `gorm:"size:100;not null;" json:"password"`
-	Token    string `gorm:"type:text" json:"token"`
-	TglLahir string `gorm:"size:100;not null;" json:"tgl_lahir"`
+	Purpose  string `gorm:"type:text;null" json:"purpose"`
+	Role     int    `gorm:"size:2" json:"role"`
+	Token    string `gorm:"type:text;null" json:"token"`
+	Otp      string `gorm:"type:text;null" json:"otp"`
 }
 
 type ResponseUserMapping struct {
 	Nama     string `json:"nama"`
+	Profile  string `json:"profile"`
+	UserName string `json:"userName"`
 	Email    string `json:"email"`
-	TglLahir string `json:"tgl_lahir"`
+	Role     int    `json:"role"`
 }
 
 func NewUUID() string {
@@ -45,14 +50,20 @@ func HashPasswordToSha256(password string) string {
 // query Login
 func (u *User) SignIn(db *gorm.DB, id uint32, email, pasword string) (string, error) {
 	user := User{}
-	if err := db.Where("email = ?", email).Take(&user).Error; err != nil {
-		return "", err
+
+	if err := db.Where("email = ?", email).
+		Take(&user).
+		Error; err != nil {
+		return "maaf email anda salah", err
 	}
+
 	//checking password to sha 256
 	hashedPassword256 := HashPasswordToSha256(pasword)
+	var err error
 	if hashedPassword256 != user.Password {
-		return "", errors.New("Password Salah")
+		return "Maaf password anda salah", err
 	}
+
 	return auth.CreateToken(id)
 }
 
@@ -69,6 +80,17 @@ func (u *User) UpdateTokenUser(db *gorm.DB, email, token string) (string, error)
 	return token, nil
 }
 
+// read
+func (u *User) GetUserByToken(db *gorm.DB, token string) (*User, error) {
+	user := User{}
+	err := db.Where("token = ?", token).First(&user).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return &user, nil
+}
+
+// get by token
 func (u *User) GetUserByEmail(db *gorm.DB, email string) (*User, error) {
 	user := User{}
 	err := db.Where("email = ?", email).First(&user).Error
@@ -84,7 +106,7 @@ func (u *User) CreateUser(db *gorm.DB) (*User, error) {
 	if err != nil {
 		return &User{}, err
 	}
-	return u, err
+	return u, nil
 }
 
 // Read id
@@ -103,8 +125,12 @@ func (u *User) GetAllUserMap(db *gorm.DB, users []User) []ResponseUserMapping {
 	for _, user := range users {
 		var response ResponseUserMapping
 		getUser, _ := u.GetUserById(db, uint32(user.Id))
-		response.Email = getUser.Email
+
 		response.Nama = getUser.Nama
+		response.Profile = getUser.Profile
+		response.UserName = getUser.UserName
+		response.Email = getUser.Email
+		response.Role = getUser.Role
 
 		allUser = append(allUser, response)
 	}
@@ -131,4 +157,75 @@ func (u *User) GetAllUser(db *gorm.DB, pages, offests string) (*[]User, uint64, 
 		return &[]User{}, 0, err
 	}
 	return &user, itemCount, nil
+}
+
+// update profile
+func (u *User) UpdateImage(db *gorm.DB, token, image string) (*User, error) {
+	user := User{}
+
+	err := db.Model(&user).
+		Where("token = ?", token).
+		Update("profile", image).
+		Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return &user, nil
+}
+
+// delete user
+func (u *User) DeleteUser(db *gorm.DB, id uint32) (*User, error) {
+	err := db.Where("id = ?", id).Delete(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+}
+
+// cek email
+func (u *User) CekEmail(db *gorm.DB, email string) (*User, error) {
+	user := User{}
+	err := db.Where("email = ?", email).
+		Take(&u).
+		Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return &user, nil
+}
+
+// update OTP
+func (u *User) UpdateOtp(db *gorm.DB, token, otp string) (*User, error) {
+	user := User{}
+
+	err := db.Model(&user).
+		Where("token = ?", token).
+		Update("otp", otp).
+		Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return &user, nil
+}
+
+// update password
+func (u *User) UpdatePassword(db *gorm.DB, token, password string) (*User, error) {
+	user := User{}
+
+	err := db.Model(&user).
+		Where("token = ?", token).
+		Update("password", password).
+		Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return &user, nil
 }
