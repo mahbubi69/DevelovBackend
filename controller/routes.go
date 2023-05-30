@@ -17,7 +17,9 @@ func (s *Server) InitializeRoutes() {
 		v1.PUT("/updateImage", s.UpdateImageController)
 		v1.DELETE("/delete/:id", s.DeleteUserController)
 		// forgot password
-		v1.POST("/chekEmailUser", s.ChekEmailUser)
+		v1.POST("/chekEmailUser", s.ChekEmailUserController)
+		v1.PUT("/changePasswordUser", s.ChangePasswordController)
+		v1.POST("/checkOtp", s.CheckOtpController)
 
 		//mentor
 		v1.POST("/createdMentor", s.CreatedMentorController)
@@ -31,6 +33,7 @@ func (s *Server) InitializeRoutes() {
 		v1.GET("/community", middleware.SetMiddlewareAuthencation(s.GetAllCommunityController))
 		//comment community
 		v1.POST("/createdComment", s.CreatedCommentCommunityController)
+		v1.POST("/searchCommunity", s.SearchCommunityByTitleController)
 
 		//tools
 		v1.POST("/createdTools", s.CreatedToolsController)
@@ -39,8 +42,6 @@ func (s *Server) InitializeRoutes() {
 
 		v1.POST("/createdMentorTools/:idMentor", s.CeatedMentorToolsController)
 
-		// send otp
-		v1.POST("/createdOtp", s.SendEmailOtpUserController)
 	}
 
 }

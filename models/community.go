@@ -47,3 +47,21 @@ func (c *Community) GetACommunity(db *gorm.DB, pages, offests string) (*[]Commun
 	}
 	return &community, itemCount, nil
 }
+
+// cari community by title
+func (c *Community) SearchCommunityByNama(db *gorm.DB, title string) (*[]Community, uint64, error) {
+	community := []Community{}
+
+	var itemCount uint64
+
+	err := db.Model(community).
+		Where("title LIKE ?", "%"+title+"%").
+		Preload("Comment").
+		Find(&community).
+		Count(&itemCount).
+		Error
+	if err != nil {
+		return &[]Community{}, 0, err
+	}
+	return &community, itemCount, nil
+}

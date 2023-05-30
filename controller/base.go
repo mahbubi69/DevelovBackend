@@ -64,7 +64,7 @@ func (s *Server) InitializeServer(DbDriver, DbHost, DbUser, DbPassword, DbName, 
 
 // status on server
 func (s *Server) StatusServer(c *gin.Context) {
-	response.GenericJsonResponse(c, http.StatusOK, "Server Lify Is Running")
+	response.GenericJsonResponse(c, http.StatusOK, "Server Develov Is Running")
 }
 
 func (s *Server) RunServer(addr string) {

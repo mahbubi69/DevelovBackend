@@ -198,6 +198,20 @@ func (u *User) CekEmail(db *gorm.DB, email string) (*User, error) {
 	return &user, nil
 }
 
+// cek email
+func (u *User) CekOtp(db *gorm.DB, otp string) (*User, error) {
+	user := User{}
+	err := db.Where("otp = ?", otp).
+		Take(&u).
+		Error
+
+	if err != nil {
+		return &User{}, err
+	}
+
+	return &user, nil
+}
+
 // update OTP
 func (u *User) UpdateOtp(db *gorm.DB, token, otp string) (*User, error) {
 	user := User{}

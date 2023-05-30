@@ -43,3 +43,19 @@ func (s *Server) GetAllCommunityController(c *gin.Context) {
 		c, count, http.StatusOK, "Succes", getAllCommunity,
 	)
 }
+
+// searc community by title
+func (s *Server) SearchCommunityByTitleController(c *gin.Context) {
+	title := c.Query("title")
+
+	community := models.Community{}
+	searchCommunity, count, _ := community.SearchCommunityByNama(s.DB, title)
+	if count == 0 {
+		response.ErrorResponseAuth(c, http.StatusOK, "maaf yang anda cari tidak ada")
+		return
+	}
+
+	response.GetJsonResponse(
+		c, count, http.StatusOK, "Succes", searchCommunity,
+	)
+}

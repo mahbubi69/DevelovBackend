@@ -8,6 +8,7 @@ type FeedBack struct {
 	Rating     int    `gorm:"size:2;null" json:"rating"`
 	Deskripsi  string `gorm:"type:text;null" json:"deskripsi"`
 	IdMentor   uint32 `gorm:"not null;index" json:"idMentor"`
+	IdUser     uint32 `gorm:"not null;index" json:"idUser"`
 }
 
 func (fb *FeedBack) CreatedFeedBack(db *gorm.DB) (*FeedBack, error) {
