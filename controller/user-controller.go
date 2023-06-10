@@ -103,6 +103,7 @@ func (s *Server) GetUserByTokenController(c *gin.Context) {
 		Profile:  getUserByToken.Profile,
 		UserName: getUserByToken.UserName,
 		Email:    getUserByToken.Email,
+		NoHp:     getUserByToken.NoHp,
 		Role:     getUserByToken.Role,
 	}
 
@@ -155,7 +156,6 @@ func (s *Server) ReadImagesController(c *gin.Context) {
 // delete
 func (s *Server) DeleteUserController(c *gin.Context) {
 	id := c.Param("id")
-
 	idMentor, _ := strconv.ParseInt(id, 10, 64)
 
 	user := models.User{}
@@ -168,4 +168,21 @@ func (s *Server) DeleteUserController(c *gin.Context) {
 	}
 	c.Writer.Header().Set("Location", fmt.Sprintf("%s%s/%d", c.Request.Host, c.Request.RequestURI, deleteMentor.Id))
 	response.JSON(c, http.StatusCreated, "Succes Delete")
+}
+
+// delete image
+func (s *Server) DeleteImageUserController(c *gin.Context) {
+	user := models.User{}
+
+	token := auth.ExtractToken(c)
+
+	if err := c.BindJSON(&user); err != nil {
+		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
+	}
+
+	deleteImage, _ := user.UpdateImage(s.DB, token, user.Profile)
+
+	c.Writer.Header().Set("Location", fmt.Sprintf("%s%s/%d", c.Request.Host, c.Request.RequestURI, deleteImage.Id))
+	response.JSON(c, http.StatusCreated, "Succes Delete Image")
+
 }

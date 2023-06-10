@@ -18,6 +18,7 @@ type User struct {
 	Profile  string `gorm:"type:text;null" json:"profile"`
 	Nama     string `gorm:"size:100;not null" json:"nama"`
 	Email    string `gorm:"size:100;not null;unique" json:"email"`
+	NoHp     string `gorm:"size:100;not null;unique" json:"noHp"`
 	Password string `gorm:"size:100;not null;" json:"password"`
 	Purpose  string `gorm:"type:text;null" json:"purpose"`
 	Role     int    `gorm:"size:2" json:"role"`
@@ -29,6 +30,7 @@ type ResponseUserMapping struct {
 	Nama     string `json:"nama"`
 	Profile  string `json:"profile"`
 	UserName string `json:"userName"`
+	NoHp     string `json:"noHp"`
 	Email    string `json:"email"`
 	Role     int    `json:"role"`
 }
@@ -130,6 +132,7 @@ func (u *User) GetAllUserMap(db *gorm.DB, users []User) []ResponseUserMapping {
 		response.Profile = getUser.Profile
 		response.UserName = getUser.UserName
 		response.Email = getUser.Email
+		response.NoHp = getUser.NoHp
 		response.Role = getUser.Role
 
 		allUser = append(allUser, response)
@@ -161,9 +164,8 @@ func (u *User) GetAllUser(db *gorm.DB, pages, offests string) (*[]User, uint64, 
 
 // update profile
 func (u *User) UpdateImage(db *gorm.DB, token, image string) (*User, error) {
-	user := User{}
 
-	err := db.Model(&user).
+	err := db.Model(&User{}).
 		Where("token = ?", token).
 		Update("profile", image).
 		Error
@@ -172,7 +174,7 @@ func (u *User) UpdateImage(db *gorm.DB, token, image string) (*User, error) {
 		return &User{}, err
 	}
 
-	return &user, nil
+	return u, nil
 }
 
 // delete user
@@ -198,7 +200,7 @@ func (u *User) CekEmail(db *gorm.DB, email string) (*User, error) {
 	return &user, nil
 }
 
-// cek email
+// cek Otp
 func (u *User) CekOtp(db *gorm.DB, otp string) (*User, error) {
 	user := User{}
 	err := db.Where("otp = ?", otp).

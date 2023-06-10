@@ -52,6 +52,16 @@ func (m *Mentor) GetAllMentor(db *gorm.DB, pages, offests string) (*[]Mentor, ui
 	return &mentor, itemCount, nil
 }
 
+// update
+func (m *Mentor) UpdateMentor(db *gorm.DB, id uint32) (*Mentor, error) {
+	// mentor := Mentor{}
+	err := db.Model(&Mentor{}).Where("id = ?", id).Update(&m).Error
+	if err != nil {
+		return &Mentor{}, err
+	}
+	return m, nil
+}
+
 // delete mentor
 func (m *Mentor) DeleteMentor(db *gorm.DB, id uint32) (*Mentor, error) {
 	err := db.Where("id = ?", id).Delete(&m).Error

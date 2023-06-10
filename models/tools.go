@@ -5,7 +5,7 @@ import "github.com/jinzhu/gorm"
 type Tools struct {
 	Id   uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	Logo string `gorm:"type:text;null" json:"image"`
-	Nama string `gorm:"size:100;not null" json:"nama"`
+	Nama string `gorm:"size:100;null" json:"nama"`
 }
 
 // created
@@ -32,11 +32,12 @@ func (t *Tools) GetTools(db *gorm.DB) (*[]Tools, uint64, error) {
 
 // update
 func (t *Tools) UpdateTools(db *gorm.DB, id uint32) (*Tools, error) {
-	err := db.Where("id = ?", id).Update(&t).Error
+	tools := Tools{}
+	err := db.Model(tools).Where("id = ?", id).Update(&tools).Error
 	if err != nil {
 		return &Tools{}, err
 	}
-	return t, nil
+	return &tools, nil
 }
 
 // delete tools

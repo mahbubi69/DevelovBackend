@@ -54,8 +54,29 @@ func (s *Server) GetAllMentorController(c *gin.Context) {
 	getAllMentor, count, _ := mentor.GetAllMentor(s.DB, page, offset)
 
 	response.GetJsonResponse(
-		c, count, http.StatusOK, "Succes", getAllMentor,
-	)
+		c, count, http.StatusOK, "Succes", getAllMentor)
+}
+
+// update
+func (s *Server) UpdateMentorController(c *gin.Context) {
+	id := c.Param("id")
+
+	idMentor, _ := strconv.ParseInt(id, 10, 64)
+
+	mentor := models.Mentor{}
+
+	if err := c.BindJSON(&mentor); err != nil {
+		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
+	}
+
+	updateMentor, err := mentor.UpdateMentor(s.DB, uint32(idMentor))
+
+	if err != nil {
+		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
+		return
+	}
+	c.Writer.Header().Set("Location", fmt.Sprintf("%s%s/%d", c.Request.Host, c.Request.RequestURI, updateMentor.Id))
+	response.JSON(c, http.StatusCreated, "Succes Update")
 }
 
 // delete

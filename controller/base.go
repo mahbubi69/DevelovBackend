@@ -20,7 +20,7 @@ type Server struct {
 	Router *gin.Engine
 }
 
-func (server *Server) ConfigOtpGmail(configAuthEmail, configAuthPassword, configSmtpHost, configSmtpPort string, toEmail []string, body []byte) error {
+func (s *Server) ConfigOtpGmail(configAuthEmail, configAuthPassword, configSmtpHost, configSmtpPort string, toEmail []string, body []byte) error {
 	auth := smtp.PlainAuth("", configAuthEmail, configAuthPassword, configSmtpHost)
 	smtpAddr := fmt.Sprintf("%s:%v", configSmtpHost, configSmtpPort)
 
@@ -54,6 +54,9 @@ func (s *Server) InitializeServer(DbDriver, DbHost, DbUser, DbPassword, DbName, 
 		models.Community{},
 		models.Tools{},
 		models.MentorTools{},
+		models.Schedule{},
+		models.Payment{},
+		models.Ticket{},
 	)
 
 	gin.SetMode(gin.ReleaseMode)

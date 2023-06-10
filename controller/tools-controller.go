@@ -47,26 +47,26 @@ func (s *Server) ReadToolsController(c *gin.Context) {
 	getAllTools, count, _ := tools.GetTools(s.DB)
 
 	response.GetJsonResponse(
-		c, count, http.StatusOK, "Succes", getAllTools,
-	)
+		c, count, http.StatusOK, "Succes", getAllTools)
 }
 
 // update
 func (s *Server) UpdateToolsController(c *gin.Context) {
 	tools := models.Tools{}
 
-	fileImage, _ := helper.UploadImage(c)
-	fmt.Println(fileImage)
+	paramIdMentor := c.Param("idMentor")
+	idMentor, _ := strconv.Atoi(paramIdMentor)
+
+	// fileImage, _ := helper.UploadImage(c)
+	// fmt.Println(fileImage)
 
 	nama := c.Request.PostFormValue("nama")
 	fmt.Println("value  : ", nama)
 
 	tools.Nama = nama
-	tools.Logo = fileImage
+	// tools.Logo = fileImage
 
-	// token := auth.ExtractToken(c)
-
-	updateTools, err := tools.UpdateTools(s.DB, 2)
+	updateTools, err := tools.UpdateTools(s.DB, uint32(idMentor))
 	if err != nil {
 		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
 		return
@@ -95,8 +95,7 @@ func (s *Server) CeatedMentorToolsController(c *gin.Context) {
 		}
 
 	}
-
-	c.Writer.Header().Set("Location", fmt.Sprintf("%s%s/%d", c.Request.Host, c.Request.RequestURI, tools))
+	c.Writer.Header().Set("Location", fmt.Sprintf("%s%s/%v", c.Request.Host, c.Request.RequestURI, tools))
 	response.JSON(c, http.StatusCreated, "Succes")
 
 }
