@@ -30,26 +30,3 @@ func main() {
 
 	server.RunServer(":" + os.Getenv("PORT"))
 }
-
-// You can edit this code!
-// Click here and start typing.
-
-// import (
-// 	"fmt"
-
-// 	"github.com/xlzd/gotp"
-// )
-
-// func main() {
-// 	// hotp := gotp.NewDefaultHOTP("4S62BZNFXXSZLCRO")
-// 	// print(hotp.At(0))
-
-// 	//
-// 	// fmt.Println("Current OTP is", gotp.NewDefaultTOTP("4S62BZNFXXSZLCRO").Now())
-// 	secretLength := 16
-// 	otpAutoGenerate := gotp.RandomSecret(secretLength)
-// 	newOtp := gotp.NewDefaultTOTP(otpAutoGenerate).Now()
-// 	//str to int
-
-// 	fmt.Println(newOtp)
-// }

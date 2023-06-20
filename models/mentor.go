@@ -10,7 +10,8 @@ type Mentor struct {
 	Id            uint32        `gorm:"primary_key;auto_increment" json:"id"`
 	Profile       string        `gorm:"type:text;null" json:"profile"`
 	Nama          string        `gorm:"size:100;not null" json:"nama"`
-	Specialist    int           `gorm:"size:2" json:"specialist"`
+	Email         string        `gorm:"size:100;not null;unique" json:"email"`
+	Specialist    string        `gorm:"size:100;not null" json:"specialist"`
 	Portofolio    string        `gorm:"type:text;null" json:"portofolio"`
 	Salary        string        `gorm:"type:text;null" json:"salary"`
 	NamaRekening  string        `gorm:"type:text;null" json:"namaRekening"`

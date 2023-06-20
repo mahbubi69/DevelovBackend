@@ -7,6 +7,7 @@ import (
 	"net/smtp"
 	"os"
 
+	"develov_be/middleware"
 	"develov_be/models"
 	"develov_be/response"
 
@@ -63,6 +64,7 @@ func (s *Server) InitializeServer(DbDriver, DbHost, DbUser, DbPassword, DbName, 
 	// s.Router = gin.New()
 	s.Router = gin.Default()
 	s.InitializeRoutes()
+	s.Router.Use(middleware.CORSMiddleware())
 }
 
 // status on server

@@ -23,12 +23,11 @@ func (s *Server) CreatedMentorController(c *gin.Context) {
 		return
 	}
 
-	specialistInt, _ := strconv.Atoi(c.PostForm("specialist"))
-
 	mentor.Nama = c.PostForm("nama")
 	mentor.Profile = fileImage
-	mentor.Specialist = specialistInt
-	mentor.Portofolio = c.PostForm("portofolio")
+	mentor.Specialist = c.PostForm("salary")
+	mentor.Email = c.PostForm("email")
+	mentor.Portofolio = c.PostForm("specealis")
 	mentor.Salary = c.PostForm("salary")
 	mentor.NamaRekening = c.PostForm("namaRekening")
 	mentor.NomorRekening = c.PostForm("nomorRekening")
