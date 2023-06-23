@@ -3,11 +3,14 @@ package models
 import "github.com/jinzhu/gorm"
 
 type Schedule struct {
-	Id       uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	Hari     string `gorm:"size:100;null" json:"hari"`
-	Jam      string `gorm:"size:100;null" json:"Jam"`
-	IdUser   uint32 `gorm:"not null;index" json:"idUser"`
-	IdMentor uint32 `gorm:"not null;index" json:"idMentor"`
+	Id         uint32 `gorm:"primary_key;auto_increment" json:"id"`
+	Hari       string `gorm:"size:100;null" json:"hari"`
+	Jam        string `gorm:"size:100;null" json:"jam"`
+	ZoomLink   string `gorm:"size:100;null" json:"zoomLink"`
+	RecordLink string `gorm:"size:100;null" json:"recordLink"`
+	Status     string `gorm:"size:100;null" json:"status"`
+	IdUser     uint32 `gorm:"not null;index" json:"idUser"`
+	IdMentor   uint32 `gorm:"not null;index" json:"idMentor"`
 }
 
 // ceated

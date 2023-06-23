@@ -11,7 +11,6 @@ type Ticket struct {
 	CodeTiket  string    `gorm:"size:100;not null;" json:"struk"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"createdAt"`
 	IdSchedule uint32    `gorm:"foreignKey:id_schedule;constraint:OnDelete:CASCADE,OnUpdate:CASCADE" json:"idSchedule"`
-	// IdSchedule uint32    `gorm:"foreignKey:id_schedule;constraint:OnDelete:CASCADE,OnUpdate:CASCADE" json:"idSchedule"`
 }
 
 // created
