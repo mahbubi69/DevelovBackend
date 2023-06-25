@@ -6,6 +6,7 @@ import (
 	"develov_be/response"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,12 @@ func (s *Server) CreatedCommunityController(c *gin.Context) {
 	community.Title = c.PostForm("title")
 	community.Deskripsi = c.PostForm("deskripsi")
 	community.Image = fileImage
+
+	//str to uint32
+	id := c.PostForm("idUser")
+	idUser, _ := strconv.ParseUint(id, 10, 32)
+
+	community.IdUser = uint32(idUser)
 
 	createdCommunity, err := community.CreatedCommunity(s.DB)
 

@@ -27,7 +27,8 @@ func (s *Server) CreatedMentorController(c *gin.Context) {
 	mentor.Profile = fileImage
 	mentor.Specialist = c.PostForm("salary")
 	mentor.Email = c.PostForm("email")
-	mentor.Portofolio = c.PostForm("specealis")
+	mentor.Specialist = c.PostForm("specealis")
+	mentor.Portofolio = c.PostForm("portofolio")
 	mentor.Salary = c.PostForm("salary")
 	mentor.NamaRekening = c.PostForm("namaRekening")
 	mentor.NomorRekening = c.PostForm("nomorRekening")

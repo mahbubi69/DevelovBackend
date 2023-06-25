@@ -18,6 +18,7 @@ type Mentor struct {
 	NomorRekening string        `gorm:"type:text;null" json:"nomorRekening"`
 	FeedBack      []FeedBack    `gorm:"Foreignkey:IdMentor;association_foreignkey:Id;" json:"feedBack"`
 	MentorTools   []MentorTools `gorm:"Foreignkey:IdMentor;association_foreignkey:Id;" json:"mentorTools"`
+	Schedule      []Schedule    `gorm:"Foreignkey:IdMentor;association_foreignkey:Id;" json:"scheduleMentoring"`
 }
 
 // Create
@@ -42,6 +43,7 @@ func (m *Mentor) GetAllMentor(db *gorm.DB, pages, offests string) (*[]Mentor, ui
 		Preload("FeedBack").
 		Preload("MentorTools").
 		Preload("MentorTools.Tools").
+		Preload("Schedule").
 		Offset((page - 1) * offset).
 		Limit(offset).
 		Find(&mentor).

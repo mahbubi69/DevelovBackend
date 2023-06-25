@@ -1,7 +1,5 @@
 package controller
 
-import "develov_be/middleware"
-
 func (s *Server) InitializeRoutes() {
 	//how to version api group
 	v1 := s.Router.Group("/api/v1")
@@ -32,7 +30,7 @@ func (s *Server) InitializeRoutes() {
 
 		//community
 		v1.POST("/createdCommunity", s.CreatedCommunityController)
-		v1.GET("/community", middleware.SetMiddlewareAuthencation(s.GetAllCommunityController))
+		v1.GET("/community", s.GetAllCommunityController)
 		//comment community
 		v1.POST("/createdComment", s.CreatedCommentCommunityController)
 		v1.POST("/searchCommunity", s.SearchCommunityByTitleController)

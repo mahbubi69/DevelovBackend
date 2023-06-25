@@ -12,27 +12,29 @@ import (
 )
 
 type User struct {
-	Id       uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	Uuid     string `gorm:"size:100;not null;unique" json:"uuId"`
-	UserName string `gorm:"size:100;not null;unique" json:"userName"`
-	Profile  string `gorm:"type:text;null" json:"profile"`
-	Nama     string `gorm:"size:100;not null" json:"nama"`
-	Email    string `gorm:"size:100;not null;unique" json:"email"`
-	NoHp     string `gorm:"size:100;not null;unique" json:"noHp"`
-	Password string `gorm:"size:100;not null;" json:"password"`
-	Purpose  string `gorm:"type:text;null" json:"purpose"`
-	Role     int    `gorm:"size:2" json:"role"`
-	Token    string `gorm:"type:text;null" json:"token"`
-	Otp      string `gorm:"type:text;null" json:"otp"`
+	Id       uint32      `gorm:"primary_key;auto_increment" json:"id"`
+	Uuid     string      `gorm:"size:100;not null;unique" json:"uuId"`
+	UserName string      `gorm:"size:100;not null;unique" json:"userName"`
+	Profile  string      `gorm:"type:text;null" json:"profile"`
+	Nama     string      `gorm:"size:100;not null" json:"nama"`
+	Email    string      `gorm:"size:100;not null;unique" json:"email"`
+	NoHp     string      `gorm:"size:100;not null;unique" json:"noHp"`
+	Password string      `gorm:"size:100;not null;" json:"password"`
+	Purpose  string      `gorm:"type:text;null" json:"purpose"`
+	Role     int         `gorm:"size:2" json:"role"`
+	Token    string      `gorm:"type:text;null" json:"token"`
+	Otp      string      `gorm:"type:text;null" json:"otp"`
+	Schedule []*Schedule `gorm:"Foreignkey:IdUser;association_foreignkey:Id;" json:"scheduleMentoring"`
 }
 
 type ResponseUserMapping struct {
-	Nama     string `json:"nama"`
-	Profile  string `json:"profile"`
-	UserName string `json:"userName"`
-	NoHp     string `json:"noHp"`
-	Email    string `json:"email"`
-	Role     int    `json:"role"`
+	Nama     string      `json:"nama"`
+	Profile  string      `json:"profile"`
+	UserName string      `json:"userName"`
+	NoHp     string      `json:"noHp"`
+	Email    string      `json:"email"`
+	Role     int         `json:"role"`
+	Schedule []*Schedule `json:"scheduleMentoring"`
 }
 
 func NewUUID() string {
@@ -114,7 +116,10 @@ func (u *User) CreateUser(db *gorm.DB) (*User, error) {
 // Read id
 func (u *User) GetUserById(db *gorm.DB, id uint32) (*User, error) {
 	user := User{}
-	err := db.Where("id = ?", id).Find(&user).Error
+	err := db.Where("id = ?", id).
+		Preload("Schedule").
+		// Preload("Schedule.Mentor").
+		Find(&user).Error
 	if err != nil {
 		return &User{}, err
 	}
@@ -134,6 +139,7 @@ func (u *User) GetAllUserMap(db *gorm.DB, users []User) []ResponseUserMapping {
 		response.Email = getUser.Email
 		response.NoHp = getUser.NoHp
 		response.Role = getUser.Role
+		response.Schedule = getUser.Schedule
 
 		allUser = append(allUser, response)
 	}

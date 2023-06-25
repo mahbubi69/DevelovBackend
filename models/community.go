@@ -13,6 +13,7 @@ type Community struct {
 	Title     string     `gorm:"size:255;not null" json:"title"`
 	Deskripsi string     `gorm:"size:255;not null" json:"deskripsi"`
 	Image     string     `gorm:"type:text;null" json:"image"`
+	IdUser    uint32     `gorm:"not null;index" json:"idUser"`
 	Comment   []*Comment `gorm:"Foreignkey:IdCommunity;association_foreignkey:Id;" json:"comment"`
 }
 
