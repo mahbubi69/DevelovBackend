@@ -52,8 +52,8 @@ func (s *Server) InitializeRoutes() {
 		v1.GET("/payment", s.GetAllPaymentController)
 
 		// tiket
-		v1.POST("/createdTicket", s.CreatedTicketController)
-		v1.PUT("/updateTicket", s.UpdateTictketController)
+		v1.POST("/createdTicket/:iduser", s.CreatedTicketController)
+		v1.PUT("/updateTicket/:id", s.UpdateTictketController)
 	}
 
 }

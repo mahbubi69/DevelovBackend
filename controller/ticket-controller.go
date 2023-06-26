@@ -15,7 +15,12 @@ import (
 func (s *Server) CreatedTicketController(c *gin.Context) {
 	tiket := models.Ticket{}
 
+	if err := c.BindJSON(&tiket); err != nil {
+		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
+	}
+
 	tiket.CodeTiket = randSeq(10)
+
 	fmt.Println("rand String : %v", randSeq(10))
 
 	createdTools, err := tiket.CreatedTicket(s.DB)

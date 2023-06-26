@@ -9,8 +9,9 @@ type Schedule struct {
 	ZoomLink   string `gorm:"size:100;null" json:"zoomLink"`
 	RecordLink string `gorm:"size:100;null" json:"recordLink"`
 	Status     string `gorm:"size:100;null" json:"status"`
-	IdUser     uint32 `gorm:"null;index" json:"idUser"`
+	IdUser     uint32 `gorm:"not null;index" json:"idUser"`
 	IdMentor   uint32 `gorm:"not null;index" json:"idMentor"`
+	Mentor     Mentor `gorm:"foreignKey:IdMentor"`
 }
 
 // ceated
@@ -27,7 +28,8 @@ func (s *Schedule) GetSchedule(db *gorm.DB) (*[]Schedule, uint64, error) {
 	schedule := []Schedule{}
 	var itemCount uint64
 
-	err := db.Find(&schedule).
+	err := db.Preload("Mentor").
+		Find(&schedule).
 		Count(&itemCount).Error
 	if err != nil {
 		return &[]Schedule{}, 0, err
