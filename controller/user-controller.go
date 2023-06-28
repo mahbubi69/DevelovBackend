@@ -20,6 +20,7 @@ func (s *Server) LoginUserController(c *gin.Context) {
 
 	if err := c.BindJSON(&user); err != nil {
 		response.ErrorResponse(c, http.StatusUnprocessableEntity, err)
+		
 	}
 
 	token, err := user.SignIn(s.DB, user.Id, user.Email, user.Password)
@@ -27,20 +28,21 @@ func (s *Server) LoginUserController(c *gin.Context) {
 	if err != nil {
 		response.ErrorSigInResponse(c, http.StatusBadRequest, token)
 		return
+	} else {
+		fmt.Printf("password user : %s \n", user.Password)
+
+		fmt.Printf("token user : %s \n", token)
+		user.UpdateTokenUser(s.DB, user.Email, token)
+
+		userDetail, err := user.GetUserByEmail(s.DB, user.Email)
+		if err != nil {
+			response.ErrorResponse(c, http.StatusBadRequest, err)
+			return
+		}
+
+		response.JSONLOGIN(c, http.StatusOK, "Berhasil Login", userDetail.Token)
 	}
 
-	fmt.Printf("password user : %s \n", user.Password)
-
-	fmt.Printf("token user : %s \n", token)
-	user.UpdateTokenUser(s.DB, user.Email, token)
-
-	userDetail, err := user.GetUserByEmail(s.DB, user.Email)
-	if err != nil {
-		response.ErrorResponse(c, http.StatusBadRequest, err)
-		return
-	}
-
-	response.JSONLOGIN(c, http.StatusOK, "Berhasil Login", userDetail.Token)
 }
 
 // created (register)
