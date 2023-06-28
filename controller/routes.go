@@ -2,7 +2,7 @@ package controller
 
 func (s *Server) InitializeRoutes() {
 	//how to version api group
-	v1 := s.Router.Group("/api/v1")
+	v1 := s.Router.Group("/v1")
 	{
 		v1.GET("/status", s.StatusServer)
 
